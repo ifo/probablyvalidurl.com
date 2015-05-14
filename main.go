@@ -62,13 +62,13 @@ func shortenResponse(w http.ResponseWriter, url string) {
 
 	// pad the output because reasons
 	// 1957 + 10 + 33 = 2000
-	outputKey := key + strings.UnsafeRandomString(1957)
+	outputKey := key + strings.RandomString(1957)
 	fmt.Fprintf(w, "%s/%s", sitePrefix, outputKey)
 }
 
 func makeKey() string {
 	for {
-		key := strings.SafeRandomString(10)
+		key := strings.RandomString(10)
 		if sites[key] == "" {
 			return key
 		}
