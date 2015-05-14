@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	//"os"
 )
 
 // TODO replace database
@@ -13,7 +14,6 @@ var sites map[string]string = make(map[string]string)
 
 // TODO make these into env vars
 const port string = ":3000"
-const sitePrefix string = "http://localhost" + port
 
 func main() {
 	// setup random strings
@@ -43,7 +43,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		if body == "" {
 			http.ServeFile(w, r, "index.html")
 		} else {
-			shortenResponse(w, body)
+			shortenResponse(w, r, body)
 		}
 	default:
 		// we don't actually care beyond 10 characters
@@ -55,14 +55,14 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func shortenResponse(w http.ResponseWriter, url string) {
+func shortenResponse(w http.ResponseWriter, r *http.Request, url string) {
 	key := makeKey()
 	sites[key] = url
 
 	// pad the output because reasons
 	// 1957 + 10 + 33 = 2000
 	outputKey := key + randomString(1957)
-	fmt.Fprintf(w, "%s/%s", sitePrefix, outputKey)
+	fmt.Fprintf(w, "%s://%s/%s", "http", r.Host, outputKey)
 }
 
 func makeKey() string {
