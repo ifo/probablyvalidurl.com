@@ -29,14 +29,18 @@ func main() {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	bdy, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	body := string(bdy)
-	if body != "" {
-		body, _ = url.QueryUnescape(body)
-		body = body[4:]
+	body := ""
+	if r.Body != nil {
+		bdy, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		body = string(bdy)
+		if body != "" {
+			body, _ = url.QueryUnescape(body)
+			// drop "url=" from body
+			body = body[4:]
+		}
 	}
 
 	switch r.URL.Path {
