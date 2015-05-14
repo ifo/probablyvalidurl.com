@@ -1,27 +1,28 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
-	//"os"
 )
 
 // TODO replace database
 var sites map[string]string = make(map[string]string)
-
-// TODO make these into env vars
-const port string = ":3000"
+var port = flag.Int("port", 3000, "Port to run the server on")
 
 func main() {
 	// setup random strings
 	setup()
 
+	// parse all flags
+	flag.Parse()
+
 	http.HandleFunc("/", indexHandler)
 
-	err := http.ListenAndServe(port, nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
