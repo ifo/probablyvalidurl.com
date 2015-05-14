@@ -10,8 +10,10 @@ import (
 	"github.com/ifo/probablyvalidurl.com/strings"
 )
 
+// TODO replace database
 var sites map[string]string = make(map[string]string)
 
+// TODO make these into env vars
 const port string = ":3000"
 const sitePrefix string = "http://localhost" + port
 
