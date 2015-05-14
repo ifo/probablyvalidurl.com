@@ -1,4 +1,4 @@
-package strings
+package main
 
 import (
 	"math/rand"
@@ -7,11 +7,11 @@ import (
 
 const alphabet string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-func Setup() {
+func setup() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
-func RandomString(length int) string {
+func randomString(length int) string {
 	var res string
 	for i := 0; i < length; i++ {
 		res += randomChar(randomInt(len(alphabet)))

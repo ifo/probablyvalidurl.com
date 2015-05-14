@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-
-	"github.com/ifo/probablyvalidurl.com/strings"
 )
 
 // TODO replace database
@@ -18,7 +16,8 @@ const port string = ":3000"
 const sitePrefix string = "http://localhost" + port
 
 func main() {
-	strings.Setup()
+	// setup random strings
+	setup()
 
 	http.HandleFunc("/", indexHandler)
 
@@ -62,13 +61,13 @@ func shortenResponse(w http.ResponseWriter, url string) {
 
 	// pad the output because reasons
 	// 1957 + 10 + 33 = 2000
-	outputKey := key + strings.RandomString(1957)
+	outputKey := key + randomString(1957)
 	fmt.Fprintf(w, "%s/%s", sitePrefix, outputKey)
 }
 
 func makeKey() string {
 	for {
-		key := strings.RandomString(10)
+		key := randomString(10)
 		if sites[key] == "" {
 			return key
 		}
