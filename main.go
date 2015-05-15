@@ -20,8 +20,10 @@ func main() {
 	// parse all flags
 	flag.Parse()
 
+	// setup handlers
 	http.HandleFunc("/", indexHandler)
 
+	// serve and catch errors
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
