@@ -30,6 +30,19 @@ func TestShortenResponse(t *testing.T) {
 	}
 }
 
+func TestShortenResponseCode(t *testing.T) {
+	request, err, recorder := createRequestAndRecorder("GET", exampleurl, nil)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	shortenResponse(recorder, request, "http://example.com/")
+
+	if recorder.Code != 200 {
+		t.Errorf("Response code was not 200")
+	}
+}
+
 func TestIndexHandler(t *testing.T) {
 	request, err, recorder := createRequestAndRecorder("GET", exampleurl, nil)
 	if err != nil {
@@ -41,6 +54,19 @@ func TestIndexHandler(t *testing.T) {
 	doctype := strings.Split(recorder.Body.String(), "\n")
 	if doctype[0] != "<!DOCTYPE HTML>" {
 		t.Errorf("Recorder body did not start with Doctype. Instead got: %q", recorder.Body.String())
+	}
+}
+
+func TestIndexHandlerCode(t *testing.T) {
+	request, err, recorder := createRequestAndRecorder("GET", exampleurl, nil)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	indexHandler(recorder, request)
+
+	if recorder.Code != 200 {
+		t.Errorf("Response code was not 200")
 	}
 }
 
