@@ -1,15 +1,14 @@
 package main
 
 import (
-	"math/rand"
-	"time"
+	"crypto/rand"
+	"log"
+	"math/big"
 )
 
 const alphabet string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-func setup() {
-	rand.Seed(time.Now().UTC().UnixNano())
-}
+var seed = rand.Reader
 
 func randomString(length int) string {
 	var res string
@@ -24,5 +23,9 @@ func randomChar(x int) string {
 }
 
 func randomInt(x int) int {
-	return rand.Intn(x)
+	rng, err := rand.Int(seed, big.NewInt(int64(x)))
+	if err != nil {
+		log.Fatal("randomInt: ", err)
+	}
+	return int(rng.Int64())
 }
