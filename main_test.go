@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -14,27 +14,25 @@ func TestMakeKey(t *testing.T) {
 }
 
 func TestShortenResponse(t *testing.T) {
-	request, err := http.NewRequest("GET", "http://example.com/", nil)
+	request, err, recorder := createRequestAndRecorder("GET", "http://example.com/", nil)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
-	recorder := httptest.NewRecorder()
-
 	shortenResponse(recorder, request, "http://example.com/")
-
-	fmt.Printf("%d - %s", recorder.Code, recorder.Body.String())
 }
 
 func TestIndexHandler(t *testing.T) {
-	request, err := http.NewRequest("GET", "http://example.com/", nil)
+	request, err, recorder := createRequestAndRecorder("GET", "http://example.com/", nil)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
-	recorder := httptest.NewRecorder()
-
 	indexHandler(recorder, request)
+}
 
-	fmt.Printf("%d - %s", recorder.Code, recorder.Body.String())
+func createRequestAndRecorder(method, url string, body io.Reader) (*http.Request, error, *httptest.ResponseRecorder) {
+	request, err := http.NewRequest(method, url, body)
+	recorder := httptest.NewRecorder()
+	return request, err, recorder
 }
