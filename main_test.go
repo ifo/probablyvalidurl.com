@@ -4,8 +4,11 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
+
+const exampleurl = "http://example.com/"
 
 func TestMakeKey(t *testing.T) {
 	if len(makeKey()) != 10 {
@@ -14,21 +17,31 @@ func TestMakeKey(t *testing.T) {
 }
 
 func TestShortenResponse(t *testing.T) {
-	request, err, recorder := createRequestAndRecorder("GET", "http://example.com/", nil)
+	request, err, recorder := createRequestAndRecorder("GET", exampleurl, nil)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
 	shortenResponse(recorder, request, "http://example.com/")
+
+	// exampleurl length + key length + extra info length
+	if len(recorder.Body.String()) != (len(exampleurl) + 10 + 1957) {
+		t.Errorf("Shortened response was not of the expected length")
+	}
 }
 
 func TestIndexHandler(t *testing.T) {
-	request, err, recorder := createRequestAndRecorder("GET", "http://example.com/", nil)
+	request, err, recorder := createRequestAndRecorder("GET", exampleurl, nil)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
 	indexHandler(recorder, request)
+
+	doctype := strings.Split(recorder.Body.String(), "\n")
+	if doctype[0] != "<!DOCTYPE HTML>" {
+		t.Errorf("Recorder body did not start with Doctype. Instead got: %q", recorder.Body.String())
+	}
 }
 
 func createRequestAndRecorder(method, url string, body io.Reader) (*http.Request, error, *httptest.ResponseRecorder) {
