@@ -1,31 +1,20 @@
 package main
 
 import (
-	"crypto/rand"
-	"log"
-	"math/big"
+	"math/rand"
+	"time"
 )
 
-const alphabet string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+var alphabet = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
-var seed = rand.Reader
+func setupStrings() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
 
 func randomString(length int) string {
-	var res string
-	for i := 0; i < length; i++ {
-		res += randomChar(randomInt(len(alphabet)))
+	b, l := make([]rune, length), len(alphabet)
+	for i := range b {
+		b[i] = alphabet[rand.Intn(l)]
 	}
-	return res
-}
-
-func randomChar(x int) string {
-	return alphabet[x : x+1]
-}
-
-func randomInt(x int) int {
-	rng, err := rand.Int(seed, big.NewInt(int64(x)))
-	if err != nil {
-		log.Fatal("randomInt: ", err)
-	}
-	return int(rng.Int64())
+	return string(b)
 }
