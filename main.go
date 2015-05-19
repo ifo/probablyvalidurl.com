@@ -14,8 +14,9 @@ var sites map[string]string = make(map[string]string)
 var port = flag.Int("port", 3000, "Port to run the server on")
 
 func main() {
-	// setup strings
+	// setup steps
 	setupStrings()
+	setupRethinkDB()
 
 	// parse all flags
 	flag.Parse()
