@@ -9,8 +9,6 @@ import (
 	"net/url"
 )
 
-// TODO replace database
-var sites map[string]string = make(map[string]string)
 var port = flag.Int("port", 3000, "Port to run the server on")
 
 func main() {
@@ -56,7 +54,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		// we don't actually care beyond 10 characters
 		if len(r.URL.Path) > 10 {
-			http.Redirect(w, r, sites[r.URL.Path[1:11]], http.StatusTemporaryRedirect)
+			url := getShortenedUrl(r.URL.Path[1:11]).Url
+			if url != "" {
+				http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+			} else {
+				http.NotFound(w, r)
+			}
 		} else {
 			http.NotFound(w, r)
 		}
@@ -64,20 +67,13 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func shortenResponse(w http.ResponseWriter, r *http.Request, url string) {
-	key := makeKey()
-	sites[key] = url
+	key, err := saveShortenedUrl(url)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 
 	// pad the output because reasons
 	// 1957 + 10 + 33 = 2000
 	outputKey := key + randomString(1957)
 	fmt.Fprintf(w, "%s://%s/%s", "http", r.Host, outputKey)
-}
-
-func makeKey() string {
-	for {
-		key := randomString(10)
-		if sites[key] == "" {
-			return key
-		}
-	}
 }
