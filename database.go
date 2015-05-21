@@ -80,6 +80,18 @@ func packageCursorToUrl(c *r.Cursor) (UrlMap, error) {
 	return rows[0], err
 }
 
+func getAllUrls() ([]UrlMap, error) {
+	ensureSession()
+	c, err := r.Table(urlTable).Run(session)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	rows := []UrlMap{}
+	err2 := c.All(&rows)
+	return rows, err2
+}
+
 func ensureSession() {
 	if session == nil {
 		setupRethinkDB()

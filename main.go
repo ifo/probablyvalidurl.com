@@ -21,6 +21,7 @@ func main() {
 
 	// setup handlers
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/list", listHandler)
 
 	// serve and catch errors
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
@@ -76,4 +77,12 @@ func shortenResponse(w http.ResponseWriter, r *http.Request, url string) {
 	// 1957 + 10 + 33 = 2000
 	outputKey := key + randomString(1957)
 	fmt.Fprintf(w, "%s://%s/%s", "http", r.Host, outputKey)
+}
+
+func listHandler(w http.ResponseWriter, r *http.Request) {
+	urls, err := getAllUrls()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	fmt.Fprint(w, urls)
 }
