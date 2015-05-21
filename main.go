@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/list", listHandler)
 
 	// serve and catch errors
+	log.Printf("Starting server on port %d\n", *port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
