@@ -34,8 +34,9 @@ func createTable(name string) error {
 }
 
 type UrlMap struct {
-	Url string `gorethink:"url"`
-	Id  string `gorethink:"id,omitempty"`
+	Id   string `gorethink:"id,omitempty"`
+	Url  string `gorethink:"url"`
+	Hits int    `gorethink:"hits"`
 }
 
 func saveShortenedUrl(url string) (string, error) {
@@ -62,9 +63,13 @@ func getShortenedUrl(key string) UrlMap {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	urlMap, err := packageCursorToUrl(c)
-	if err != nil {
-		log.Fatalln(err.Error())
+	urlMap, err2 := packageCursorToUrl(c)
+	if err2 != nil {
+		log.Fatalln(err2.Error())
+	}
+	err3 := addHitToUrl(urlMap)
+	if err3 != nil {
+		log.Fatalln(err3.Error())
 	}
 	return urlMap
 }
@@ -78,6 +83,12 @@ func packageCursorToUrl(c *r.Cursor) (UrlMap, error) {
 	rows := []UrlMap{}
 	err := c.All(&rows)
 	return rows[0], err
+}
+
+func addHitToUrl(u UrlMap) error {
+	u.Hits += 1
+	_, err := r.Table(urlTable).Get(u.Id).Update(u).Run(session)
+	return err
 }
 
 func getAllUrls() ([]UrlMap, error) {
