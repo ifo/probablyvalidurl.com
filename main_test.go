@@ -10,12 +10,6 @@ import (
 
 const exampleurl = "http://example.com/"
 
-func TestMakeKey(t *testing.T) {
-	if len(makeKey()) != 10 {
-		t.Errorf("makeKey() didn't return a string of length 10")
-	}
-}
-
 func TestShortenResponse(t *testing.T) {
 	request, err, recorder := createRequestAndRecorder("GET", exampleurl, nil)
 	if err != nil {

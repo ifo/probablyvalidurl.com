@@ -6,7 +6,7 @@ import (
 )
 
 func TestRandomString(t *testing.T) {
-	setup()
+	setupStrings()
 	// random string of length 10
 	length := 10
 	check := randomString(length)
@@ -23,7 +23,7 @@ func TestRandomString(t *testing.T) {
 }
 
 func TestRandomStringInvalidChars(t *testing.T) {
-	setup()
+	setupStrings()
 	const invalidChars = "-_"
 	randString := randomString(256)
 	for _, v := range invalidChars {
@@ -34,7 +34,7 @@ func TestRandomStringInvalidChars(t *testing.T) {
 }
 
 func TestRandomStringValidChars(t *testing.T) {
-	setup()
+	setupStrings()
 	randString := randomString(256)
 	for _, v := range randString {
 		if !strings.Contains(string(alphabet), string(v)) {
