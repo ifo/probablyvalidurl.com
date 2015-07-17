@@ -17,7 +17,7 @@ func setupRethinkDB() {
 		Database: *db,
 	})
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalf("RethinkDB Connection error: %s\n", err.Error())
 	}
 	session = sess
 
