@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -49,7 +50,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/":
 		if body == "" {
-			http.ServeFile(w, r, "index.html")
+			tmpl, _ := template.ParseFiles("templates/index.html")
+			tmpl.Execute(w, "paltry")
 		} else {
 			shortenResponse(w, r, body)
 		}
